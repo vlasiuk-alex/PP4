@@ -1,0 +1,586 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: 'ALAR Articles'
+  description: 'An API that allows users to create articles service'
+  termsOfService: http://Online_Lections.com/terms-of-use
+  contact:
+    name: Oleksandr
+    url: Article_Reader.com
+    email: vlas.alex75@gmail.com
+  license:
+    name: Article_Reader
+    url: hrrp://lisense.foo.com
+    
+servers:
+  - url: 'https://ALAR.articles/v2'
+tags:
+  - name: Moderator
+    description: User Moder
+  - name: User
+    description: User User
+  - name: Article
+    description: articles 
+paths:
+
+  /Moderator:
+    post:
+      tags:
+        - Moderator
+      summary: Add a new Moderator to the site
+      operationId: addMod
+      parameters:
+        - name: modname
+          in: header
+          description: The name that needs to be added
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Created Successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '405':
+          description: Invalid input
+      security:
+        - api_key: []
+      requestBody:
+        $ref: '#/components/requestBodies/UserArray'
+    put:
+      tags:
+        - Moderator
+      summary: Update an existing moderator
+      operationId: updateMod
+      parameters:
+        - name: modname
+          in: header
+          description: The name that needs to be editted
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Editted Successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User' 
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: moder not found
+        '405':
+          description: Validation exception
+      security:
+        - api_key: []
+      requestBody:
+        $ref: '#/components/requestBodies/UserArray'
+    delete:
+      tags:
+        - Moderator
+      summary: Delete Moderator
+      description: This can only be done by the logged in moderator.
+      operationId: deleteMod
+      parameters:
+        - name: modname
+          in: header
+          description: The name that needs to be deleted
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+      security:
+        - api_key: []
+  
+  /Moderator/login:
+    get:
+      tags:
+        - Moderator
+      summary: Logs user into the system
+      operationId: loginModer
+      parameters:
+        - name: username
+          in: query
+          description: The user name for login
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password for login in clear text
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+        '400':
+          description: Invalid username/password supplied
+  /Moderator/logout:
+    get:
+      tags:
+        - Moderator
+      summary: Logs out current logged in user session
+      operationId: logoutModer
+      responses:
+        default:
+          description: successful operation   
+    
+            
+            
+  /User:
+    post:
+      tags:
+        - User
+      summary: Add a new User to the site
+      operationId: addUser
+      parameters:
+        - name: usname
+          in: header
+          description: The name that needs to be added
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Created Successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '405':
+          description: Invalid input
+      security:
+        - api_key: []
+      requestBody:
+        $ref: '#/components/requestBodies/UserArray'
+    put:
+      tags:
+        - User
+      summary: Update an existing User
+      operationId: updateUser
+      parameters:
+        - name: username
+          in: header
+          description: The name that needs to be editted
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Editted Successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User' 
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: moder not found
+        '405':
+          description: Validation exception
+      security:
+        - api_key: []
+      requestBody:
+        $ref: '#/components/requestBodies/UserArray'
+    delete:
+      tags:
+        - User
+      summary: Delete User
+      description: This can only be done by the logged in moderator.
+      operationId: deleteUs
+      parameters:
+        - name: username
+          in: header
+          description: The name that needs to be deleted
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+      security:
+        - api_key: []
+  /User/login:
+    get:
+      tags:
+        - User
+      summary: Logs user into the system
+      operationId: loginUser
+      parameters:
+        - name: username
+          in: query
+          description: The user name for login
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password for login in clear text
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+        '400':
+          description: Invalid username/password supplied
+  /User/logout:
+    get:
+      tags:
+        - User
+      summary: Logs out current logged in user session
+      operationId: logoutUser
+      responses:
+        default:
+          description: successful operation   
+            
+            
+            
+  /Article/list:
+    get:
+      tags:
+        - Article
+      summary: Returns lists of available articles
+      description: Returns lists of available articles
+      operationId: getarticle
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+        '400':
+          description: Invalid status value
+            
+  /Article:
+    post:
+      tags:
+        - Article
+      summary: Add a new article to the site
+      operationId: addart
+      responses:
+        '405':
+          description: Invalid input
+      security:
+        - types:
+            - 'moder'
+            - 'user'
+      requestBody:
+        $ref: '#/components/requestBodies/Article'
+    put:
+        tags:
+          - Article
+        summary: Update an existing article
+        operationId: updateart
+        responses:
+          '400':
+            description: Invalid ID supplied
+          '404':
+            description: article not found
+          '405':
+            description: Validation exception
+        security:
+          - types:
+              - 'moder'
+              - 'user'
+        requestBody:
+          $ref: '#/components/requestBodies/Article'
+    delete:
+        tags:
+          - Article
+        summary: Delete Article
+        description: This can only be done by the logged in moderator.
+        operationId: deleteart
+        parameters:
+          - name: modname
+            in: header
+            description: The name that needs to be deleted
+            schema:
+              type: string
+        responses:
+          '400':
+            description: Invalid article supplied
+          '404':
+            description: User not found
+        security:
+          - types:
+              - 'moder'
+              
+              
+              
+  /Article/{id}:
+    get:
+      tags:
+        - Article
+      summary: For reading
+      description: Choose any article and read
+      operationId: read_enjoy
+      parameters:
+        - name: id
+          in: path
+          description: ID of article that needs to be fetched
+          required: true
+          schema: 
+           type: integer
+           format: int64
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: Article not found
+          
+          
+  /Article/confirm:
+    get:
+      tags:
+        - Article
+      summary: Finds Articles by status
+      description: Multiple status values can be provided with comma separated strings
+      operationId: findArticlesByStatus
+      parameters:
+        - name: status
+          in: query
+          description: Status values that need to be considered for filter
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - editting process
+                - in mod process
+                - admitted
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+        '400':
+          description: Invalid status value
+      security:
+        - types:
+            - 'moder'
+            
+    put:
+        tags:
+          - Article
+        summary: for moders to admit redacting
+        operationId: admit
+        parameters:
+        - name: status
+          in: query
+          description: Status values that need to be considered for filter
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - editting process
+                - in mod process
+                - admitted
+        responses:
+          '400':
+            description: Invalid ID supplied
+          '404':
+            description: article not found
+          '405':
+            description: Validation exception
+        security:
+          - types:
+              - 'moder'
+        
+      
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        userStatus:
+          type: integer
+          format: int32
+          description: User Status
+      xml:
+        name: User
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+      xml:
+        name: Tag
+    Article:
+      type: object
+      required:
+        - title
+        - text
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+          example: The best phrase in the world
+        text:
+          type: string
+          example: bla bla bla
+        tags:
+          type: array
+          xml:
+            name: tag
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/Tag'
+        status:
+          type: string
+          description: Status at the moment
+          enum:
+            - editting process
+            - in mod process
+            - admitted
+        complete:
+          type: boolean
+          default: true
+      xml:
+        name: Article
+    
+  requestBodies:
+    Article:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Article'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/Article'
+      description: Pet object that needs to be added to the store
+      required: true
+    UserArray:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
+      description: List of user object
+    
+  securitySchemes:
+    types:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: 'https://ALAR.articles/v2/oauth/dialog'
+          scopes:
+            'moder': you are moderator
+            'user': simply reader
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
